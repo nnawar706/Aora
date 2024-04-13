@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import { Slot, SplashScreen } from 'expo-router'
+import { Stack, SplashScreen } from 'expo-router'
 import { useFonts } from 'expo-font'
 import { useEffect } from 'react'
 
@@ -19,18 +19,25 @@ const RootLayout = () => {
   })
 
   useEffect(() => {
-    if (error) throw error
+    if (error) throw error;
 
-    if (!fontsLoaded && !error) return null
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, error]);
 
-    if (fontsLoaded) SplashScreen.hideAsync()
-  }, [fontsLoaded, error])
+  if (!fontsLoaded || (!fontsLoaded && !error)) {
+    return null;
+  }
 
   return (
     <>
-      <Text>Header</Text>
-      <Slot />
-      <Text>Footer</Text>
+      <Stack>
+        <Stack.Screen name='(root)' options={{ headerShown: false }}/>
+        <Stack.Screen name='(auth)' options={{ headerShown: false }}/>
+        <Stack.Screen name='index' options={{ headerShown: false }}/>
+        <Stack.Screen name='search/[query]' options={{ headerShown: false }}/>
+      </Stack>
     </>
   )
 }
