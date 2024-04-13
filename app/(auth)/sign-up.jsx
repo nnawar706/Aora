@@ -6,7 +6,7 @@ import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 import { images } from "../../constants";
 import Button from "../../components/Button";
 import InputField from "../../components/InputField";
-// import { createUser } from "../../lib/appwrite";
+import { createUser } from "../../lib/appwrite";
 // import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignUp = () => {
@@ -21,13 +21,13 @@ const SignUp = () => {
 
   const handleSubmit = async () => {
     if (form.username === "" || form.email === "" || form.password === "") {
-      Alert.alert("Error", "Please fill in all fields");
+      Alert.alert("Error", "Please fill in all fields.");
     }
 
     setIsSubmitting(true);
 
     try {
-      // const result = await createUser(form.email, form.password, form.username);
+      const response = await createUser(form.username, form.email, form.password);
       // setUser(result);
       // setIsLogged(true);
 
