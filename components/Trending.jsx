@@ -1,11 +1,17 @@
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import React from 'react'
 
-const Trending = () => {
+const Trending = ({ data }) => {
   return (
-    <View>
-      <Text>Trending</Text>
-    </View>
+    <FlatList
+        data={data}
+        horizontal
+        keyExtractor={(item) => item.$id}
+        renderItem={(item) => (
+            <Text>{item.$id}</Text>
+        )}
+        contentOffset={{ x: 170 }}
+    />
   )
 }
 

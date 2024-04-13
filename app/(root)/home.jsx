@@ -8,6 +8,7 @@ import Trending from '../../components/Trending';
 import EmptyState from '../../components/EmptyState';
 import useFetch from '../../lib/useFetch';
 import { getAllPost, getLatestPost } from '../../lib/appwrite';
+import Card from '../../components/Card';
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false)
@@ -21,12 +22,18 @@ const Home = () => {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-primary h-full">
       <FlatList
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <Text>{item.id}</Text>
+          <Card
+            title={item.title}
+            thumbnail={item.thumbnail}
+            video={item.video}
+            creator={item.creator.username}
+            avatar={item.creator.avatar}
+          />
         )}
         ListHeaderComponent={() => (
           <View className="my-6 px-4 space-y-6">
@@ -64,7 +71,7 @@ const Home = () => {
         ListEmptyComponent={() => (
           <EmptyState
             title={'No videos found'}
-            subtitle={'No videos have been created yet.'}
+            subtitle={'Be the first to upload a video.'}
           />
         )}
         refreshControl={
