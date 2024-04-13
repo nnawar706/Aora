@@ -4,7 +4,7 @@ import { View, Text, Image } from "react-native";
 import { images } from "../constants";
 import CustomButton from "./CustomButton";
 
-const NotFound = ({ title, subtitle }) => {
+const EmptyState = ({ title, subtitle }) => {
   return (
     <View className="flex justify-center items-center px-4">
       <Image
@@ -27,4 +27,4 @@ const NotFound = ({ title, subtitle }) => {
   );
 };
 
-export default NotFound;
+export default EmptyState;
