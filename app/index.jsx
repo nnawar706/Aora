@@ -1,12 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, Image, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { images } from '../constants';
 import Button from '../components/Button';
+import { useGlobalContext } from '../context/GlobalProvider'
 
 export default function App() {
+  const { isLoading, isLoggedIn } = useGlobalContext()
+
+  if (!isLoading && isLoggedIn) return <Redirect href="/home"/>
 
   const handlePress = () => {
     router.push('/sign-in')

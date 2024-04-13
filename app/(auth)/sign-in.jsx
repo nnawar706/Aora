@@ -1,11 +1,12 @@
 import { View, Text, ScrollView, Image, Alert, Dimensions } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
 
 import { images } from '../../constants'
 import InputField from '../../components/InputField'
 import Button from '../../components/Button'
+import { signIn } from '../../lib/appwrite'
 
 const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -24,9 +25,12 @@ const SignIn = () => {
     setIsSubmitting(true)
 
     try {
-      
+      await signIn(form.email, form.password)
+
+      Alert.alert('Success', 'Successfully signed in.')
+      router.replace('/home')
     } catch (error) {
-      
+      Alert.alert('Error', error.message)
     } finally {
       setIsSubmitting(false)
     }
