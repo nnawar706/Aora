@@ -1,10 +1,42 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Image, TextInput, TouchableOpacity, Alert } from 'react-native'
+import React, { useState } from 'react'
+import { router, usePathname } from 'expo-router'
 
-const Searchbar = () => {
+import { icons } from '../constants'
+
+const Searchbar = ({ query }) => {
+  const pathname = usePathname()
+  const [search, setSearch] = useState(query || '')
+
   return (
-    <View>
-      <Text>Searchbar</Text>
+    <View className="flex flex-row items-center space-x-4 w-full h-16 
+    px-4 bg-black-100 rounded-2xl border-2 border-black-200 
+    focus:border-secondary">
+      <TextInput
+        className="text-base mt-0.5 text-white flex-1 font-pregular"
+        value={search}
+        placeholder="Search a video topic"
+        placeholderTextColor="#CDCDE0"
+        onChangeText={(e) => setSearch(e)}
+      />
+
+      <TouchableOpacity
+        onPress={() => {
+          if (search === '') 
+          {
+            return Alert.alert('Error', 'Type something to search')
+          }
+
+          if (pathname.startsWith('/search')) router.setParams({ search })
+          else router.push(`/search/${search}`)
+        }}
+      >
+        <Image
+          source={icons.search}
+          className="w-5 h-5"
+          resizeMode='contain'
+        />
+      </TouchableOpacity>
     </View>
   )
 }

@@ -1,5 +1,7 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
+import { ResizeMode, Video } from 'expo-av'
+import moment from 'moment'
 
 import { icons } from '../constants'
 
@@ -29,7 +31,7 @@ const Card = ({ title, thumbnail, video, creator, avatar, createdAt }) => {
                         className="text-xs text-gray-100 font-pregular"
                         numberOfLines={1}
                     >
-                        @{creator} - {createdAt}
+                        @{creator} - {moment(createdAt).startOf('hour').fromNow()}
                     </Text>
                 </View>
             </View>
@@ -41,8 +43,43 @@ const Card = ({ title, thumbnail, video, creator, avatar, createdAt }) => {
                 />
             </View>
         </View>
-        {/* {play ? ()
-        : ()}     */}
+        {play ? (
+            <Video
+                source={{
+                    uri: video
+                }}
+                className="w-full h-60 rounded-xl mt-3"
+                resizeMode={ResizeMode.CONTAIN}
+                useNativeControls
+                shouldPlay
+                onPlaybackStatusUpdate={(status) => {
+                    if (status.didJustFinish) {
+                        setPlay(false)
+                    }
+                }}
+            />
+        )
+        : (
+            <TouchableOpacity
+                className="w-full h-60 rounded-xl mt-3 relative flex justify-center items-center"
+                activeOpacity={0.7}
+                onPress={() => {
+                    setPlay(true)
+                }}
+            >
+                <Image
+                    source={{ uri: thumbnail }}
+                    className="w-full h-full rounded-xl mt-3"
+                    resizeMode="cover"
+                />
+
+                <Image
+                    source={icons.play}
+                    className="w-12 h-12 absolute"
+                    resizeMode="contain"
+                />
+            </TouchableOpacity>
+        )}
     </View>
   )
 }
