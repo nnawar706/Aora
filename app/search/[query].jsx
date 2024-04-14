@@ -1,5 +1,5 @@
 import { View, Text, FlatList } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -13,6 +13,9 @@ const Search = () => {
   const { query } = useLocalSearchParams()
   const { data: posts, refetch } = useFetch(() => getPostsBySearch(query))
 
+  useEffect(() => {
+    refetch()
+  }, [query])
   return (
     <SafeAreaView className="bg-primary h-full">
       <FlatList
