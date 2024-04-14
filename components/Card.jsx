@@ -1,7 +1,9 @@
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import React, { useState } from 'react'
 
-const Card = ({ title, thumbnail, video, creator, avatar }) => {
+import { icons } from '../constants'
+
+const Card = ({ title, thumbnail, video, creator, avatar, createdAt }) => {
   const [play, setPlay] = useState(false)
   
   return (
@@ -27,7 +29,7 @@ const Card = ({ title, thumbnail, video, creator, avatar }) => {
                         className="text-xs text-gray-100 font-pregular"
                         numberOfLines={1}
                     >
-                        {creator}
+                        @{creator} - {createdAt}
                     </Text>
                 </View>
             </View>

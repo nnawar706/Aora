@@ -1,16 +1,18 @@
-import { View, Text, FlatList, RefreshControl } from 'react-native'
+import { View, Text, FlatList, RefreshControl, Image } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { images } from '../constants';
+import { images } from '../../constants';
 import Searchbar from '../../components/Searchbar';
 import Trending from '../../components/Trending';
 import EmptyState from '../../components/EmptyState';
 import useFetch from '../../lib/useFetch';
 import { getAllPost, getLatestPost } from '../../lib/appwrite';
 import Card from '../../components/Card';
+import { useGlobalContext } from '../../context/GlobalProvider';
 
 const Home = () => {
+  const { user } = useGlobalContext()
   const [refreshing, setRefreshing] = useState(false)
   const { data: posts, refetch } = useFetch(getAllPost)
   const { data: latest } = useFetch(getLatestPost)
@@ -33,6 +35,7 @@ const Home = () => {
             video={item.video}
             creator={item.creator.username}
             avatar={item.creator.avatar}
+            createdAt={item.$createdAt}
           />
         )}
         ListHeaderComponent={() => (
@@ -44,7 +47,7 @@ const Home = () => {
                   Welcome Back
                 </Text>
                 <Text className="text-2xl font-psemibold text-white">
-                  JSMastery
+                  {user?.username}
                 </Text>
               </View>
 
