@@ -3,10 +3,12 @@ import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { ResizeMode, Video } from 'expo-av'
+import * as DocumentPicker from 'expo-document-picker'
 
 import { useGlobalContext } from '../../context/GlobalProvider'
 import InputField from '../../components/InputField'
 import Button from '../../components/Button'
+import { icons } from '../../constants'
 
 const Create = () => {
   const { user } = useGlobalContext()
@@ -18,11 +20,37 @@ const Create = () => {
     prompt: "",
   })
 
+  const openFilePicker = async (type) => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: type === 'image' 
+        ? ['image/png', 'image/jpg']
+        : ['video/mp4', 'video/gif']
+    })
+
+    if (!result.canceled)
+    {
+      if (type === 'image')
+      {
+        setForm({ ...form, thumbnail: result.assets[0] })
+      } 
+      else if (type === 'video')
+      {
+        setForm({ ...form, video: result.assets[0] })
+      }
+    }
+    else 
+    {
+      setTimeout(() => {
+        Alert.alert('Document picked.', JSON.stringify(result, null, 2))
+      }, 100)
+    }
+  }
+
   const handleSubmit = async () => {
     if (
-      (form.prompt === "") |
-      (form.title === "") |
-      !form.thumbnail |
+      (form.prompt === "") ||
+      (form.title === "") ||
+      !form.thumbnail ||
       !form.video
     ) {
       return Alert.alert('Error', 'Some required fields are missing.')
@@ -32,6 +60,7 @@ const Create = () => {
     
     try {
       Alert.alert('Success', 'New video uploaded successfully.')
+      
       router.push('/home')
     } catch (error) {
       Alert.alert('Error', error.message)
@@ -50,22 +79,22 @@ const Create = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView className="px-4 my-6">
-      <Text className="text-2xl text-white font-psemibold">Upload Video</Text>
+        <Text className="text-2xl text-white font-psemibold">Upload Video</Text>
 
-      <InputField
-        title="Title"
-        value={form.title}
-        placeholder="Give your video a catchy title..."
-        handleChangeText={(e) => setForm({ ...form, title: e })}
-        otherStyles="mt-10"
-      />
+        <InputField
+          title="Title"
+          value={form.title}
+          placeholder="Give your video a catchy title..."
+          handleChangeText={(e) => setForm({ ...form, title: e })}
+          otherStyles="mt-10"
+        />
 
         <View className="mt-7 space-y-2">
           <Text className="text-base text-gray-100 font-pmedium">
             Upload Video
           </Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => openFilePicker('video')}>
             {form.video ? (
               <Video
                 source={{ uri: form.video.uri }}
@@ -93,6 +122,30 @@ const Create = () => {
           <Text className="text-base text-gray-100 font-pmedium">
             Thumbnail Image
           </Text>
+
+          <TouchableOpacity onPress={() => openFilePicker('image')}>
+            {form.thumbnail ? (
+              <Image
+                source={{ uri: form.thumbnail.uri }}
+                resizeMode='cover'
+                className="w-full h-64 rounded-2xl"
+              />
+            ) : (
+              <View className="w-full h-16 px-4 bg-black-100 rounded-2xl 
+              border-2 border-black-200 flex justify-center items-center 
+              flex-row space-x-2">
+                <Image
+                  source={icons.upload}
+                  resizeMode="contain"
+                  alt="upload"
+                  className="w-5 h-5"
+                />
+                <Text className="text-sm text-gray-100 font-pmedium">
+                  Choose a File
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
         </View>
 
         <InputField
