@@ -3,12 +3,13 @@ import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { ResizeMode, Video } from 'expo-av'
-import * as DocumentPicker from 'expo-document-picker'
+import * as ImagePicker from 'expo-image-picker'
 
 import { useGlobalContext } from '../../context/GlobalProvider'
 import InputField from '../../components/InputField'
 import Button from '../../components/Button'
 import { icons } from '../../constants'
+import { createVideo } from '../../lib/appwrite'
 
 const Create = () => {
   const { user } = useGlobalContext()
@@ -21,10 +22,13 @@ const Create = () => {
   })
 
   const openFilePicker = async (type) => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: type === 'image' 
-        ? ['image/png', 'image/jpg']
-        : ['video/mp4', 'video/gif']
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: type === 'image' 
+                    ? ImagePicker.MediaTypeOptions.Images
+                    : ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
     })
 
     if (!result.canceled)
@@ -59,6 +63,11 @@ const Create = () => {
     setIsUploading(true)
     
     try {
+
+      const video = await createVideo({
+        ...form, userId: user.$id
+      })
+
       Alert.alert('Success', 'New video uploaded successfully.')
       
       router.push('/home')
